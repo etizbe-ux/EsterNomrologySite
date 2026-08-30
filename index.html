@@ -370,7 +370,7 @@ input.bad,textarea.bad{border-color:#C0714B;box-shadow:0 0 0 3px rgba(192,113,75
   <div class="form-body">
   <form id="form" action="https://formsubmit.co/etizbe@gmail.com" method="POST" accept-charset="UTF-8">
 
-    <input type="hidden" name="_subject" value="ייעוץ נומורולוגי | שאלון חדש">
+    <input type="hidden" name="_subject" value="ייעוץ נומרולוגי | שאלון חדש">
     <input type="hidden" name="_template" value="table">
     <input type="hidden" name="_captcha" value="false">
     <input type="hidden" name="_autoresponse" value="קיבלתי את השאלון שלך, תודה שהקדשת לו מחשבה. אני עוברת עליו ובונה את המפה הנומרולוגית שלך, ואחזור אליך בקרוב עם קישור לפגישה. באהבה.">
@@ -803,7 +803,7 @@ input.bad,textarea.bad{border-color:#C0714B;box-shadow:0 0 0 3px rgba(192,113,75
     var email = document.getElementById('f-email').value.trim();
 
     var payload = {
-      _subject: 'ייעוץ נומורולוגי | ' + (name || 'נשלח מהאתר'),
+      _subject: 'ייעוץ נומרולוגי | ' + (name || 'נשלח מהאתר'),
       _template: 'table',
       _captcha: 'false',
       _replyto: email,
@@ -825,14 +825,34 @@ input.bad,textarea.bad{border-color:#C0714B;box-shadow:0 0 0 3px rgba(192,113,75
       headers: {'Content-Type':'application/json', 'Accept':'application/json'},
       body: JSON.stringify(payload)
     })
-    .then(function(res){ if(!res.ok) throw new Error('bad status'); return res.json(); })
-    .then(function(){ finish(); })
-    .catch(function(){
+    .then(function(res){
+      return res.json().then(function(data){
+        if(!res.ok){
+          throw new Error((data && data.message) ? data.message : 'FormSubmit החזיר שגיאת שרת');
+        }
+        return data;
+      });
+    })
+    .then(function(data){
+      var success = data && (data.success === true || String(data.success).toLowerCase() === 'true');
+      if(!success){
+        throw new Error((data && data.message) ? data.message : 'FormSubmit לא אישר שהטופס התקבל');
+      }
+      finish();
+    })
+    .catch(function(err){
       btn.disabled = false;
       btn.textContent = 'שליחת השאלון';
       var body = encodeURIComponent(asText(rows)).slice(0,1700);
-      var subj = encodeURIComponent('ייעוץ נומורולוגי | ' + name);
-      showAlert('השליחה לא עברה, כנראה תקלת רשת רגעית. אפשר לנסות שוב, או ' +
+      var subj = encodeURIComponent('ייעוץ נומרולוגי | ' + name);
+      var msg = (err && err.message) ? err.message : '';
+      var extra = '';
+      if(/web server|HTML files|server/i.test(msg)){
+        extra = '<br><strong>חשוב:</strong> יש לפתוח ולשלוח את הטופס דרך האתר שפורסם ב-GitHub Pages, ולא על ידי פתיחת קובץ ה-HTML מהמחשב.';
+      } else if(msg){
+        extra = '<br><small>' + msg.replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}) + '</small>';
+      }
+      showAlert('הטופס לא נשלח ל-FormSubmit ולכן לא הגיע למייל.' + extra + '<br>אפשר לנסות שוב, או ' +
                 '<a href="mailto:' + TO + '?subject=' + subj + '&body=' + body + '">לשלוח דרך תוכנת המייל</a>.');
     });
   });
