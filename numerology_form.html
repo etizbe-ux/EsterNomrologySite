@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>שאלון לייעוץ נומרולוגי</title>
+<meta name="description" content="שאלון לייעוץ נומרולוגי — כמה פרטים לפני הפגישה, כדי לבנות מפה מדויקת רק לך.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&family=Frank+Ruhl+Libre:wght@300;400;500&family=Cormorant+Garamond:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ==========================================================
+   פלטה שנלקחה מהבאנר: נייר שמנת, כתמי אקוורל ורודים
+   וירקרקים, קווי זהב דקים וכתב חום־שוקולד.
+   ========================================================== */
+:root{
+  --paper:#FBF4EC;
+  --blush:#EBC4B7;
+  --blush-deep:#D9A08E;
+  --sage:#98A088;
+  --gold:#C09A45;
+  --gold-deep:#A87F2B;
+  --gold-light:#E0C685;
+  --ink:#432B22;
+  --ink-soft:#6B5245;
+  --muted:#93806F;
+  --line:#E3D3C2;
+  --display:'Frank Ruhl Libre','Times New Roman',serif;
+  --num:'Cormorant Garamond','Frank Ruhl Libre',serif;
+  --body:'Assistant','Segoe UI',Arial,sans-serif;
+}
+
+*{box-sizing:border-box}
+html{background:var(--paper);scroll-behavior:smooth}
+
+body{
+  margin:0;
+  padding:clamp(0px,3vw,44px) clamp(0px,3vw,28px) clamp(28px,5vw,64px);
+  background:transparent;
+  font-family:var(--body);
+  color:var(--ink-soft);
+  font-size:17px;
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+/* ---------- שכבות רקע: אקוורל, כוכבים ומספרים מרחפים ---------- */
+.bg{position:fixed;inset:0;pointer-events:none}
+.wash{z-index:-4}
+.wash span{position:absolute;border-radius:50%;filter:blur(64px)}
+.w1{width:54vw;height:46vw;top:-16vw;right:-14vw;background:rgba(217,160,142,.42)}
+.w2{width:46vw;height:40vw;top:-12vw;left:-16vw;background:rgba(235,196,183,.38)}
+.w3{width:50vw;height:44vw;bottom:-18vw;left:-14vw;background:rgba(152,160,136,.30)}
+.w4{width:42vw;height:38vw;bottom:-14vw;right:-12vw;background:rgba(217,160,142,.28)}
+.w5{width:64vw;height:32vw;top:40%;left:18%;background:rgba(152,160,136,.14)}
+
+.stars{z-index:-3}
+.stars i{
+  position:absolute;display:block;border-radius:50%;
+  background:var(--gold);opacity:.4;
+  animation:twinkle 5s ease-in-out infinite;
+}
+@keyframes twinkle{0%,100%{opacity:.12;transform:scale(.8)}50%{opacity:.58;transform:scale(1)}}
+
+.figures{z-index:-2}
+.figures b{
+  position:absolute;font-family:var(--num);font-weight:300;
+  color:rgba(168,127,43,.12);line-height:1;
+  animation:float 24s ease-in-out infinite;
+}
+@keyframes float{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-28px) rotate(2deg)}}
+
+/* ---------- פס התקדמות ---------- */
+.progress{position:fixed;top:0;right:0;left:0;height:2px;z-index:60}
+.progress i{
+  display:block;height:100%;width:0;
+  background:linear-gradient(90deg,var(--gold-light),var(--gold),var(--gold-deep));
+  transition:width .5s cubic-bezier(.2,.8,.2,1);
+}
+
+/* ---------- גיליון הנייר ---------- */
+.sheet{
+  position:relative;max-width:840px;margin:0 auto;
+  background:rgba(253,249,244,.78);
+  -webkit-backdrop-filter:blur(9px) saturate(1.1);
+  backdrop-filter:blur(9px) saturate(1.1);
+  border:1px solid rgba(192,154,69,.28);
+  border-radius:clamp(0px,1.4vw,10px);
+  box-shadow:0 30px 80px rgba(103,68,48,.14),0 2px 0 rgba(255,255,255,.6) inset;
+  overflow:hidden;
+}
+
+
+/* ---------- בס״ד ---------- */
+.bsad{
+  position:absolute;
+  top:14px;
+  right:20px;
+  z-index:10;
+  font-family:var(--body);
+  font-size:15px;
+  font-weight:600;
+  color:var(--gold-deep);
+}
+@media (max-width:560px){.bsad{top:10px;right:14px;font-size:14px}}
+
+/* ---------- הבאנר ---------- */
+.hero{position:relative;padding:clamp(50px,9vw,88px) clamp(20px,5vw,60px) clamp(34px,6vw,90px);text-align:center;overflow:hidden}
+.hero::after{
+  content:"";position:absolute;inset:auto 0 0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(192,154,69,.4),transparent);
+}
+.hero-art{position:absolute;inset:0;pointer-events:none}
+.hero-art svg{position:absolute}
+.art-line{bottom:3%;right:0;width:100%}
+.art-swirl{top:-4%;right:-4%;width:min(42%,330px)}
+.spark-a{top:22%;left:12%;width:18px;color:var(--gold);opacity:.7}
+.spark-b{bottom:26%;left:26%;width:11px;color:var(--gold);opacity:.55}
+
+.eyebrow{
+  position:relative;font-size:12px;letter-spacing:.34em;
+  color:var(--gold-deep);font-weight:600;margin-bottom:20px;
+}
+.hero h1{
+  position:relative;font-family:var(--display);font-weight:300;
+  font-size:clamp(36px,7.6vw,64px);line-height:1.14;letter-spacing:.02em;
+  margin:0;color:var(--ink);text-shadow:0 1px 0 rgba(255,255,255,.8);
+}
+/* המחלק עם הכוכב — כמו בבאנר */
+.divider{
+  position:relative;display:flex;align-items:center;justify-content:center;
+  gap:12px;margin:26px auto 30px;max-width:420px;
+}
+.divider .rule{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--gold))}
+.divider .rule:last-child{background:linear-gradient(90deg,var(--gold),transparent)}
+.divider .dot{width:4px;height:4px;border-radius:50%;background:var(--gold);flex:0 0 auto}
+.divider .star{width:22px;height:22px;color:var(--gold);flex:0 0 auto;animation:pulse 5s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.75;transform:rotate(0) scale(.9)}50%{opacity:1;transform:rotate(45deg) scale(1.08)}}
+
+.hero p{position:relative;margin:0 auto;max-width:640px;color:var(--ink-soft)}
+.hero p + p{margin-top:11px}
+
+/* ---------- גוף השאלון ---------- */
+.form-body{padding:0 clamp(20px,5vw,60px) clamp(34px,6vw,56px)}
+
+.section{padding-top:clamp(38px,6vw,54px)}
+.section-head{display:flex;align-items:center;gap:16px;margin-bottom:6px}
+.mark{
+  position:relative;flex:0 0 auto;width:46px;height:46px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--display);font-size:21px;color:var(--gold-deep);
+}
+.mark::before,.mark::after{content:"";position:absolute;border-radius:50%}
+.mark::before{inset:0;border:1px solid rgba(192,154,69,.5)}
+.mark::after{inset:-6px;border:1px dotted rgba(192,154,69,.45)}
+.section-head h2{
+  font-family:var(--display);font-weight:400;letter-spacing:.01em;
+  font-size:clamp(25px,4.6vw,33px);margin:0;color:var(--ink);
+}
+.section-note{color:var(--muted);font-size:15.5px;margin:0 0 26px;padding-right:62px}
+@media (max-width:560px){.section-note{padding-right:0}}
+
+/* ---------- שדות ---------- */
+.field{margin-bottom:28px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 30px}
+@media (max-width:620px){.grid2{grid-template-columns:1fr}}
+
+label.q{display:block;font-weight:600;font-size:16.5px;margin-bottom:2px;color:var(--ink)}
+.req{color:var(--gold-deep);font-weight:700}
+.hint{display:block;font-size:14px;color:var(--muted);margin-bottom:9px;font-weight:400;line-height:1.5}
+
+input[type=text],input[type=tel],input[type=email],input[type=date],textarea{
+  width:100%;font-family:var(--body);font-size:16.5px;color:var(--ink);
+  background:rgba(255,255,255,.4);border:0;border-bottom:1.5px solid var(--line);
+  border-radius:3px 3px 0 0;padding:10px 12px;
+  transition:border-color .2s,background-color .2s,box-shadow .2s;
+}
+textarea{
+  border:1.5px solid var(--line);border-radius:6px;background:rgba(255,255,255,.58);
+  padding:13px 15px;min-height:98px;resize:vertical;line-height:1.65;
+}
+input:focus,textarea:focus{
+  outline:none;border-color:var(--gold);background:rgba(255,255,255,.92);
+  box-shadow:0 0 0 3px rgba(192,154,69,.14);
+}
+input[type=date]{max-width:240px}
+input.bad,textarea.bad{border-color:#C0714B;box-shadow:0 0 0 3px rgba(192,113,75,.13)}
+
+/* ---------- כפתורי בחירה ---------- */
+.choices{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+.choices input{position:absolute;opacity:0;width:0;height:0}
+.choices label{
+  display:inline-block;padding:9px 19px;border:1px solid var(--line);
+  border-radius:999px;cursor:pointer;font-size:15.5px;color:var(--ink-soft);
+  transition:all .18s;user-select:none;background:rgba(255,255,255,.6);
+}
+.choices label:hover{border-color:var(--gold);color:var(--ink)}
+.choices input:checked + label{
+  background:linear-gradient(135deg,var(--gold),var(--gold-deep));
+  border-color:var(--gold-deep);color:#FFFBF2;
+  box-shadow:0 4px 14px rgba(168,127,43,.28);
+}
+.choices input:focus-visible + label{outline:2px solid var(--gold-deep);outline-offset:3px}
+
+/* ---------- גלגל שביל החיים ---------- */
+.wheel-wrap{
+  margin-top:26px;padding:26px clamp(16px,4vw,30px);
+  border:1px solid rgba(192,154,69,.32);border-radius:10px;
+  background:radial-gradient(ellipse at 50% 0%,rgba(235,196,183,.3),rgba(255,252,247,.55) 72%);
+  display:none;
+}
+.wheel-wrap.on{display:block;animation:rise .6s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.wheel-row{display:flex;align-items:center;gap:clamp(16px,4vw,32px)}
+@media (max-width:560px){.wheel-row{flex-direction:column;text-align:center}}
+.wheel{flex:0 0 auto;width:clamp(152px,34vw,188px);height:clamp(152px,34vw,188px)}
+.wheel .ring-dot{
+  fill:none;stroke:var(--gold);stroke-width:1.4;stroke-dasharray:.5 8;stroke-linecap:round;
+  opacity:.75;transform-origin:120px 120px;animation:spin 90s linear infinite;
+}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.wheel .ring{fill:none;stroke:rgba(192,154,69,.45);stroke-width:1}
+.wheel .halo{fill:rgba(192,154,69,.1)}
+.wheel .digit{font-family:var(--num);font-size:15px;fill:rgba(107,82,69,.42);text-anchor:middle;transition:fill .45s,font-size .45s}
+.wheel .digit.hot{fill:var(--gold-deep);font-size:19px;font-weight:500}
+.wheel .pip{fill:var(--gold);opacity:0;transition:opacity .5s}
+.wheel .pip.hot{opacity:1}
+.wheel .core{font-family:var(--num);font-size:58px;fill:var(--ink);text-anchor:middle}
+.wheel-txt{flex:1}
+.wheel-txt b{display:block;font-family:var(--display);font-weight:400;font-size:21px;color:var(--ink);margin-bottom:5px}
+.wheel-txt p{margin:0;font-size:15.5px;color:var(--ink-soft)}
+.master{display:inline-block;margin-top:10px;padding:3px 14px;border-radius:999px;font-size:13px;letter-spacing:.08em;color:#FFFBF2;background:linear-gradient(135deg,var(--gold),var(--gold-deep))}
+.calc{margin-top:11px;font-family:var(--num);font-size:15px;color:var(--muted);direction:ltr;text-align:right;font-variant-numeric:tabular-nums}
+@media (max-width:560px){.calc{text-align:center}}
+
+/* ---------- אישור ושליחה ---------- */
+.consent{
+  margin-top:40px;padding:19px 22px;
+  background:rgba(235,196,183,.2);border:1px solid rgba(192,154,69,.3);
+  border-radius:8px;display:flex;gap:13px;align-items:flex-start;font-size:15.5px;
+}
+.consent input{margin-top:5px;width:19px;height:19px;accent-color:var(--gold-deep);flex:0 0 auto;cursor:pointer}
+.consent label{cursor:pointer}
+
+.submit-wrap{margin-top:34px;text-align:center}
+.send{
+  font-family:var(--body);font-size:18px;font-weight:600;color:#FFFBF2;
+  background:linear-gradient(135deg,var(--gold-light),var(--gold) 45%,var(--gold-deep));
+  border:0;border-radius:999px;padding:17px 62px;cursor:pointer;letter-spacing:.03em;
+  box-shadow:0 10px 26px rgba(168,127,43,.3);
+  transition:transform .18s,box-shadow .18s,filter .18s;
+}
+.send:hover{transform:translateY(-2px);box-shadow:0 15px 34px rgba(168,127,43,.36);filter:brightness(1.04)}
+.send:active{transform:translateY(0)}
+.send:focus-visible{outline:3px solid var(--gold-deep);outline-offset:4px}
+.send[disabled]{opacity:.6;cursor:wait;transform:none}
+.submit-note{margin-top:14px;font-size:14px;color:var(--muted)}
+.alert{
+  margin:18px auto 0;max-width:540px;padding:13px 18px;border-radius:8px;
+  background:rgba(192,113,75,.1);border:1px solid rgba(192,113,75,.35);
+  color:#8C4B2B;font-size:15px;display:none;
+}
+.alert.on{display:block}
+.alert a{color:#8C4B2B;font-weight:600}
+
+.signoff{
+  margin-top:46px;padding-top:24px;border-top:1px solid rgba(192,154,69,.28);
+  text-align:center;font-family:var(--display);font-weight:300;
+  font-size:20px;color:var(--gold-deep);letter-spacing:.04em;
+}
+
+/* ---------- מסך התודה ---------- */
+.done{
+  position:fixed;inset:0;z-index:80;display:none;
+  align-items:center;justify-content:center;padding:24px;
+  background:radial-gradient(ellipse at 50% 30%,#FDF6EE,#F1E1D4);
+}
+.done.on{display:flex;animation:fade .6s ease both}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.done-card{max-width:520px;text-align:center}
+.done-card .seal{width:126px;height:126px;color:var(--gold)}
+.done-card h2{font-family:var(--display);font-weight:300;font-size:clamp(30px,6vw,44px);color:var(--ink);margin:10px 0 14px}
+.done-card p{color:var(--ink-soft);margin:0 auto;max-width:42ch}
+.done-card .num-big{font-family:var(--num);font-size:64px;color:var(--gold-deep);line-height:1;margin:20px 0 4px}
+.done-card .small{font-size:14px;color:var(--muted)}
+
+
+/* תיקוני ריווח לאחר הסרת שדות */
+#wheel-wrap:not(.on) + .grid2{margin-top:0!important}
+.section > .field:last-child,.section > .grid2:last-child .field{margin-bottom:0}
+
+/* יישור טלפון ומייל */
+.contact-grid{align-items:stretch}
+.contact-grid .field{display:flex;flex-direction:column}
+.contact-grid .field input{margin-top:auto}
+
+/* העיסוק והשינוי תמיד אחד מתחת לשני */
+.stack-fields{display:block;width:100%;clear:both}
+.stack-fields > .field{display:block;width:100%}
+.stack-fields > .field:last-child{margin-bottom:0}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+  .send:hover{transform:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ====== רקע ====== -->
+<div class="bg wash" aria-hidden="true">
+  <span class="w1"></span><span class="w2"></span><span class="w3"></span><span class="w4"></span><span class="w5"></span>
+</div>
+<div class="bg stars" id="stars" aria-hidden="true"></div>
+<div class="bg figures" id="figures" aria-hidden="true"></div>
+
+<div class="progress" aria-hidden="true"><i id="bar"></i></div>
+
+<main class="sheet">
+  <div class="bsad">בס״ד</div>
+
+  <!-- ====== באנר ====== -->
+  <header class="hero">
+    <div class="hero-art" aria-hidden="true">
+      <!-- הקו הזורם עם העיגולים -->
+      <svg class="art-line" viewBox="0 0 1200 130" fill="none" stroke="#C09A45" stroke-width="1.3">
+        <path d="M0,88 C90,124 150,46 250,54 S400,106 500,86 S640,32 760,46 S940,98 1060,72 S1160,36 1200,42" opacity=".85"/>
+        <circle cx="250" cy="54" r="9"/><circle cx="500" cy="86" r="14"/>
+        <circle cx="760" cy="46" r="6"/><circle cx="1060" cy="72" r="10"/>
+      </svg>
+      <!-- הספירלה, המסלולים המנוקדים והענף -->
+      <svg class="art-swirl" viewBox="0 0 420 420" fill="none" stroke="#C09A45" stroke-width="1.3">
+        <path d="M350,170 A100,100 0 0 1 150,170 A82,82 0 0 1 314,170 A66,66 0 0 1 182,170 A52,52 0 0 1 286,170 A40,40 0 0 1 206,170 A29,29 0 0 1 264,170 A20,20 0 0 1 224,170 A12,12 0 0 1 248,170"/>
+        <path d="M350,170 C354,262 300,332 200,354 C122,371 62,354 8,330"/>
+        <circle cx="150" cy="300" r="54" stroke-dasharray=".5 9" stroke-linecap="round"/>
+        <circle cx="106" cy="246" r="28" stroke-dasharray=".5 9" stroke-linecap="round"/>
+        <circle cx="150" cy="300" r="4" fill="#C09A45" stroke="none"/>
+        <circle cx="200" cy="354" r="7"/>
+        <path d="M296,124 C326,84 358,48 400,18" stroke-width="1.1"/>
+        <g fill="rgba(152,160,136,.45)" stroke="rgba(152,160,136,.7)" stroke-width="1">
+          <ellipse cx="286" cy="118" rx="15" ry="7" transform="rotate(-38 286 118)"/>
+          <ellipse cx="308" cy="112" rx="15" ry="7" transform="rotate(28 308 112)"/>
+          <ellipse cx="308" cy="94"  rx="15" ry="7" transform="rotate(-38 308 94)"/>
+          <ellipse cx="330" cy="88"  rx="15" ry="7" transform="rotate(28 330 88)"/>
+          <ellipse cx="330" cy="68"  rx="14" ry="6.5" transform="rotate(-38 330 68)"/>
+          <ellipse cx="352" cy="62"  rx="14" ry="6.5" transform="rotate(28 352 62)"/>
+          <ellipse cx="354" cy="42"  rx="13" ry="6" transform="rotate(-38 354 42)"/>
+          <ellipse cx="376" cy="36"  rx="13" ry="6" transform="rotate(28 376 36)"/>
+          <ellipse cx="382" cy="16"  rx="11" ry="5" transform="rotate(-30 382 16)"/>
+        </g>
+      </svg>
+      <svg class="spark-a" viewBox="-12 -12 24 24" fill="currentColor"><path d="M0,-11 Q1.6,-1.6 11,0 Q1.6,1.6 0,11 Q-1.6,1.6 -11,0 Q-1.6,-1.6 0,-11 Z"/></svg>
+      <svg class="spark-b" viewBox="-12 -12 24 24" fill="currentColor"><path d="M0,-11 Q1.6,-1.6 11,0 Q1.6,1.6 0,11 Q-1.6,1.6 -11,0 Q-1.6,-1.6 0,-11 Z"/></svg>
+    </div>
+
+    <div class="eyebrow">לפני שנפגשים</div>
+    <h1>שאלון לייעוץ נומרולוגי</h1>
+    <div class="divider" aria-hidden="true">
+      <span class="rule"></span><span class="dot"></span>
+      <svg class="star" viewBox="-12 -12 24 24" fill="currentColor"><path d="M0,-11 Q1.6,-1.6 11,0 Q1.6,1.6 0,11 Q-1.6,1.6 -11,0 Q-1.6,-1.6 0,-11 Z"/></svg>
+      <span class="dot"></span><span class="rule"></span>
+    </div>
+       <p>איזה כיף שבחרת במתנה קסומה עבור עצמך.</p>
+    <p>כדי לבנות מפה נומרולוגית שהיא מדויקת רק לך, אני צריכה כמה פרטים.<br>
+    אפשר לקחת את הזמן ולענות בדיוק המרבי — במיוחד בשם ובתאריך הלידה.</p>
+  </header>
+
+  <div class="form-body">
+  <form id="form" action="https://formsubmit.co/etizbe@gmail.com" method="POST" accept-charset="UTF-8">
+
+    <input type="hidden" name="_subject" value="ייעוץ נומורולוגי | שאלון חדש">
+    <input type="hidden" name="_template" value="table">
+    <input type="hidden" name="_captcha" value="false">
+    <input type="hidden" name="_autoresponse" value="קיבלתי את השאלון שלך, תודה שהקדשת לו מחשבה. אני עוברת עליו ובונה את המפה הנומרולוגית שלך, ואחזור אליך בקרוב עם קישור לפגישה. באהבה.">
+    <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
+    <input type="hidden" id="lifepath" name="שביל החיים (חושב אוטומטית)" value="">
+
+    <!-- ============ א ============ -->
+    <section class="section">
+      <div class="section-head"><div class="mark">א</div><h2>פרטים אישיים</h2></div>
+      <p class="section-note">השם ותאריך הלידה הם הבסיס לכל החישוב, אז כאן חשוב הדיוק.</p>
+
+     
+
+      <div class="field">
+        <label class="q" for="f-id">השם המלא כפי שמופיע בתעודת הזהות <span class="req">*</span></label>
+        <span class="hint">כולל שמות אמצעיים, אם יש</span>
+        <input type="text" id="f-id" name="שם בתעודת זהות" required>
+      </div>
+
+      <div class="grid2">
+        <div class="field">
+          <label class="q" for="f-prev">שם קודם</label>
+          <span class="hint"> שם נעורים או שינוי שם</span>
+          <input type="text" id="f-prev" name="שם קודם">
+        </div>
+        <div class="field">
+          <label class="q" for="f-nick">איך קוראים לך בפועל</label>
+          <span class="hint">כינוי או שם חיבה שמשתמשים בו</span>
+          <input type="text" id="f-nick" name="כינוי">
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="q" for="f-dob">תאריך לידה לועזי <span class="req">*</span></label>
+        <span class="hint">יום / חודש / שנה</span>
+        <input type="date" id="f-dob" name="תאריך לידה" required>
+      </div>
+
+      <!-- גלגל שביל החיים -->
+      <div class="wheel-wrap" id="wheel-wrap">
+        <div class="wheel-row">
+          <svg class="wheel" id="wheel" viewBox="0 0 240 240" aria-hidden="true">
+            <circle class="ring-dot" cx="120" cy="120" r="110"/>
+            <circle class="ring" cx="120" cy="120" r="94"/>
+            <circle class="halo" cx="120" cy="120" r="42"/>
+            <g id="wheel-digits"></g>
+            <text class="core" id="core" x="120" y="140">—</text>
+          </svg>
+          <div class="wheel-txt">
+            <b>מספר שביל הגורל</b>
+            <p>מספר זה מראה את הכיוון הכללי של חייך, את הדרך שהנשמה בחרה לעבור עוד לפני שנולדת, על זה נרחיב בפגישתנו.</p>
+            <div id="master-tag"></div>
+            <div class="calc" id="calc"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-top:28px">
+        <div class="field">
+          <label class="q" for="f-birth-country">מדינת לידה</label>
+          <input type="text" id="f-birth-country" name="מדינת לידה">
+        </div>
+        <div class="field">
+          <label class="q" for="f-current-country">מדינה שבה את/ה חי/ה היום</label>
+          <input type="text" id="f-current-country" name="מדינת מגורים כיום">
+        </div>
+      </div>
+
+      <div class="grid2 contact-grid">
+        <div class="field">
+          <label class="q" for="f-phone">טלפון נייד <span class="req">*</span></label>
+          <input type="tel" id="f-phone" name="טלפון" required>
+        </div>
+        <div class="field">
+          <label class="q" for="f-email">כתובת מייל <span class="req">*</span></label>
+          <span class="hint">לכאן יישלח אישור, ולכאן אחזור אליך</span>
+          <input type="email" id="f-email" name="email" required>
+        </div>
+      </div>
+
+     
+    </section>
+
+    <!-- ============ ב ============ -->
+    <section class="section">
+      <div class="section-head"><div class="mark">ב</div><h2>החיים שלך היום</h2></div>
+      <p class="section-note">תמונת מצב קצרה של החיים שלך כרגע.</p>
+
+      <div class="field">
+        <label class="q">מצב משפחתי</label>
+        <div class="choices">
+          <input type="radio" id="ms1" name="מצב משפחתי" value="רווק/ה"><label for="ms1">רווק/ה</label>
+          <input type="radio" id="ms2" name="מצב משפחתי" value="בזוגיות"><label for="ms2">בזוגיות</label>
+          <input type="radio" id="ms3" name="מצב משפחתי" value="נשוי/אה"><label for="ms3">נשוי/אה</label>
+          <input type="radio" id="ms4" name="מצב משפחתי" value="פרוד/ה"><label for="ms4">פרוד/ה</label>
+          <input type="radio" id="ms5" name="מצב משפחתי" value="גרוש/ה"><label for="ms5">גרוש/ה</label>
+          <input type="radio" id="ms6" name="מצב משפחתי" value="אלמן/ה"><label for="ms6">אלמן/ה</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="q" for="f-partner">בן או בת הזוג</label>
+        <span class="hint">שם מלא ותאריך לידה לועזי, אם רלוונטי</span>
+        <input type="text" id="f-partner" name="בן/בת זוג">
+      </div>
+
+      <div class="field">
+        <label class="q" for="f-kids">ילדים</label>
+        <span class="hint">שם מלא ותאריך לידה של כל אחד, שורה לכל ילד</span>
+        <textarea id="f-kids" name="ילדים"></textarea>
+      </div>
+
+      <div class="stack-fields">
+        <div class="field">
+          <label class="q" for="f-work">העיסוק שלך היום?</label>
+          <input type="text" id="f-work" name="עיסוק">
+        </div>
+
+        <div class="field">
+          <label class="q" for="f-change">יש שינוי בחיים שלך כרגע?</label>
+          <span class="hint">מעבר דירה, החלפת עבודה, פרידה, לימודים, הרחבת משפחה, כל דבר שזז</span>
+          <textarea id="f-change" name="שינוי בתקופה האחרונה"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ג ============ -->
+    <section class="section">
+      <div class="section-head"><div class="mark">ג</div><h2>מה מטרת הפגישה?</h2></div>
+      <p class="section-note">החלק הזה קובע על מה נשים דגש בפגישה. אפשר לכתוב בגובה העיניים, אין תשובה נכונה.</p>
+
+      <div class="field">
+        <label class="q">במה הכי חשוב לך שנתמקד</label>
+        <span class="hint">אפשר לבחור כמה</span>
+        <div class="choices">
+          <input type="checkbox" id="t1" name="תחומי מיקוד" value="זוגיות"><label for="t1">זוגיות</label>
+          <input type="checkbox" id="t2" name="תחומי מיקוד" value="פרנסה וכסף"><label for="t2">פרנסה וכסף</label>
+          <input type="checkbox" id="t3" name="תחומי מיקוד" value="קריירה וייעוד"><label for="t3">קריירה וייעוד</label>
+          <input type="checkbox" id="t4" name="תחומי מיקוד" value="בריאות"><label for="t4">בריאות</label>
+          <input type="checkbox" id="t5" name="תחומי מיקוד" value="משפחה והורות"><label for="t5">משפחה והורות</label>
+          <input type="checkbox" id="t6" name="תחומי מיקוד" value="ביטחון עצמי"><label for="t6">ביטחון עצמי</label>
+          <input type="checkbox" id="t7" name="תחומי מיקוד" value="אחר"><label for="t7">אחר</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="q" for="f-q1">אם הייתה מתקבלת תשובה אחת בלבד בפגישה, מה הייתה השאלה? <span class="req">*</span></label>
+        <textarea id="f-q1" name="השאלה המרכזית" required></textarea>
+      </div>
+
+      <div class="field">
+        <label class="q" for="f-q2">מה מעסיק אותך בתקופה האחרונה?</label>
+        <span class="hint">כמה משפטים, מה שעולה לך</span>
+        <textarea id="f-q2" name="מה עובר עליי"></textarea>
+      </div>
+
+      <div class="field">
+        <label class="q" for="f-q3">איזה תחום בחייך מרגיש תקוע והיית רוצה לשנות?</label>
+        <span class="hint">דפוס שחוזר על עצמו — בזוגיות, בעבודה, מול כסף, מול עצמך</span>
+        <textarea id="f-q3" name="דפוס חוזר"></textarea>
+      </div>
+
+      <div class="field">
+        <label class="q" for="f-q4">ובאיזה תחומים בחייך את/ה מרגיש/ה הצלחה וסיפוק?</label>
+        <span class="hint">מה כן עובד לך טוב?</span>
+        <textarea id="f-q4" name="נקודות חוזק"></textarea>
+      </div>
+
+    </section>
+
+    <!-- ============ ד ============ -->
+    <section class="section">
+      <div class="section-head"><div class="mark">ד</div><h2>כמה דברים אחרונים</h2></div>
+      <p class="section-note">טכני, ואז סיימנו.</p>
+
+      <div class="field">
+        <label class="q" for="f-sens">יש נושא שעדיף שלא ניגע בו?</label>
+        <span class="hint">חשוב לי לדעת מראש</span>
+        <textarea id="f-sens" name="נושא רגיש" style="min-height:74px"></textarea>
+      </div>
+
+      <div class="grid2">
+        <div class="field">
+          <label class="q" for="f-when">ימים ושעות שנוחים לך?</label>
+          <input type="text" id="f-when" name="זמינות לפגישה">
+        </div>
+        <div class="field">
+          <label class="q" for="f-src">איך הגעת אליי?</label>
+          <input type="text" id="f-src" name="איך הגעת">
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="q" for="f-more">משהו נוסף שחשוב לך שאדע?</label>
+        <textarea id="f-more" name="הערות נוספות" style="min-height:74px"></textarea>
+      </div>
+
+      <div class="consent">
+        <input type="checkbox" id="f-ok" name="אישור" value="אישר/ה" required>
+        <label for="f-ok">אני מאשר/ת שהפרטים שמסרתי נכונים, ושהם ישמשו לבניית המפה הנומרולוגית שלי בלבד. <span class="req">*</span></label>
+      </div>
+    </section>
+
+    <div class="submit-wrap">
+      <button type="submit" class="send" id="send">שליחת השאלון</button>
+      <div class="submit-note">אחרי השליחה יגיע אליך אישור למייל</div>
+      <div class="alert" id="alert" role="alert"></div>
+    </div>
+
+    <div class="signoff">מחכה לפגוש אותך - אסתר שירה חיון</div>
+  </form>
+  </div>
+</main>
+
+<!-- ====== מסך התודה ====== -->
+<div class="done" id="done" role="status" aria-live="polite">
+  <div class="done-card">
+    <svg class="seal" viewBox="0 0 240 240" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true">
+      <circle cx="120" cy="120" r="106" stroke-dasharray=".5 9" stroke-linecap="round"/>
+      <circle cx="120" cy="120" r="78"/>
+      <path d="M120,44 Q126,114 196,120 Q126,126 120,196 Q114,126 44,120 Q114,114 120,44 Z" fill="currentColor" stroke="none" opacity=".9"/>
+    </svg>
+    <h2>השאלון נשלח</h2>
+    <p>תודה שהקדשת לזה מחשבה. אני עוברת על מה שכתבת, בונה את המפה הנומרולוגית שלך, וחוזרת אליך בקרוב.</p>
+    <div class="num-big" id="done-num"></div>
+    <div class="small" id="done-sub"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var SVGNS = 'http://www.w3.org/2000/svg';
+
+  /* ================= רקע: כוכבים ומספרים מרחפים ================= */
+  var frag = document.createDocumentFragment();
+  for(var i=0;i<60;i++){
+    var s = document.createElement('i');
+    var sz = (Math.random()*2.4+1).toFixed(1);
+    s.style.cssText = 'width:'+sz+'px;height:'+sz+'px;top:'+(Math.random()*100).toFixed(2)+'%;left:'+
+      (Math.random()*100).toFixed(2)+'%;animation-delay:'+(Math.random()*5).toFixed(2)+'s';
+    frag.appendChild(s);
+  }
+  document.getElementById('stars').appendChild(frag);
+
+  var pool = ['1','2','3','4','5','6','7','8','9','11','22','33'];
+  var frag2 = document.createDocumentFragment();
+  for(var j=0;j<pool.length;j++){
+    var b = document.createElement('b');
+    b.textContent = pool[j];
+    b.style.cssText = 'font-size:'+(Math.random()*70+40).toFixed(0)+'px;top:'+(Math.random()*90+3).toFixed(2)+
+      '%;left:'+(Math.random()*90+3).toFixed(2)+'%;animation-delay:'+(Math.random()*12).toFixed(2)+
+      's;animation-duration:'+(Math.random()*14+18).toFixed(0)+'s';
+    frag2.appendChild(b);
+  }
+  document.getElementById('figures').appendChild(frag2);
+
+  /* ================= גלגל המספרים ================= */
+  var wheelG = document.getElementById('wheel-digits');
+  var digitEls = {}, pipEls = {};
+  for(var n=1;n<=9;n++){
+    var a  = (-90 + (n-1)*40) * Math.PI/180;
+    var tx = 120 + 94*Math.cos(a), ty = 120 + 94*Math.sin(a);
+    var t  = document.createElementNS(SVGNS,'text');
+    t.setAttribute('class','digit');
+    t.setAttribute('x', tx.toFixed(1));
+    t.setAttribute('y', (ty+5.5).toFixed(1));
+    t.textContent = n;
+    wheelG.appendChild(t);
+    digitEls[n] = t;
+
+    var px = 120 + 110*Math.cos(a), py = 120 + 110*Math.sin(a);
+    var c  = document.createElementNS(SVGNS,'circle');
+    c.setAttribute('class','pip');
+    c.setAttribute('cx', px.toFixed(1));
+    c.setAttribute('cy', py.toFixed(1));
+    c.setAttribute('r','3.4');
+    wheelG.appendChild(c);
+    pipEls[n] = c;
+  }
+
+  var form   = document.getElementById('form');
+  var dob    = document.getElementById('f-dob');
+  var wrap   = document.getElementById('wheel-wrap');
+  var core   = document.getElementById('core');
+  var calc   = document.getElementById('calc');
+  var tag    = document.getElementById('master-tag');
+  var hidden = document.getElementById('lifepath');
+
+  function onlyDigits(s){ return s.replace(/\D/g,'').split('').map(Number); }
+  function sum(arr){ return arr.reduce(function(x,y){ return x+y; }, 0); }
+  function isMaster(v){ return v===11 || v===22 || v===33; }
+
+  function reduceNum(v){
+    var steps = [];
+    while(v > 9 && !isMaster(v)){
+      var d = String(v).split('').map(Number);
+      var next = sum(d);
+      steps.push(d.join(' + ') + ' = ' + next);
+      v = next;
+    }
+    return {value:v, steps:steps};
+  }
+
+  function updateWheel(){
+    var val = dob.value;
+    if(!val || onlyDigits(val).length < 8){
+      wrap.classList.remove('on');
+      hidden.value = '';
+      return;
+    }
+    var d = onlyDigits(val);
+    var first = sum(d);
+    var r = reduceNum(first);
+
+    for(var k=1;k<=9;k++){
+      var hot = d.indexOf(k) !== -1;
+      digitEls[k].setAttribute('class', hot ? 'digit hot' : 'digit');
+      pipEls[k].setAttribute('class',   hot ? 'pip hot'   : 'pip');
+    }
+
+    core.textContent = r.value;
+    calc.textContent = [d.join(' + ') + ' = ' + first].concat(r.steps).join('   \u2192   ');
+    tag.innerHTML = isMaster(r.value) ? '<span class="master">מספר מאסטר</span>' : '';
+    hidden.value = r.value + (isMaster(r.value) ? ' (מספר מאסטר)' : '');
+    wrap.classList.add('on');
+  }
+  dob.addEventListener('change', updateWheel);
+  dob.addEventListener('input', updateWheel);
+
+  /* ================= פס ההתקדמות ================= */
+  var bar = document.getElementById('bar');
+  function updateBar(){
+    var groups = {};
+    var els = form.querySelectorAll('input, textarea');
+    Array.prototype.forEach.call(els, function(el){
+      var name = el.name;
+      if(!name || name.charAt(0) === '_' || el.type === 'hidden') return;
+      if(!(name in groups)) groups[name] = false;
+      var has = (el.type === 'checkbox' || el.type === 'radio') ? el.checked : el.value.trim() !== '';
+      if(has) groups[name] = true;
+    });
+    var keys = Object.keys(groups), filled = 0;
+    keys.forEach(function(k){ if(groups[k]) filled++; });
+    bar.style.width = keys.length ? Math.round(filled / keys.length * 100) + '%' : '0%';
+  }
+  form.addEventListener('input', updateBar);
+  form.addEventListener('change', updateBar);
+
+  /* ================= איסוף התשובות בסדר קריא ================= */
+  var SECTIONS = ['א. פרטים אישיים','ב. החיים שלך היום','ג. למה באת','ד. כמה דברים אחרונים'];
+  var SEP = '\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500';
+
+  function collect(){
+    var out = [];
+    var sections = form.querySelectorAll('section.section');
+
+    Array.prototype.forEach.call(sections, function(sec, idx){
+      var order = [], vals = {};
+      var els = sec.querySelectorAll('input, textarea');
+
+      Array.prototype.forEach.call(els, function(el){
+        var name = el.name;
+        if(!name || name.charAt(0) === '_') return;
+        var label = (name === 'email') ? 'כתובת מייל' : name;
+        if(order.indexOf(label) === -1){ order.push(label); vals[label] = []; }
+        if(el.type === 'radio' || el.type === 'checkbox'){
+          if(el.checked) vals[label].push(el.value);
+        } else {
+          var v = el.value.trim();
+          if(v) vals[label].push(v);
+        }
+      });
+
+      var rows = [];
+      order.forEach(function(label){
+        if(vals[label].length) rows.push([label, vals[label].join(' \u00B7 ')]);
+      });
+      if(idx === 0 && hidden.value) rows.push(['שביל החיים (חושב אוטומטית)', hidden.value]);
+
+      if(rows.length){
+        out.push(['\u2500 ' + SECTIONS[idx] + ' \u2500', SEP]);
+        out = out.concat(rows);
+      }
+    });
+    return out;
+  }
+
+  function asText(rows){
+    return rows.map(function(r){
+      return (r[1] === SEP) ? '\n' + r[0] + '\n' : r[0] + ': ' + r[1];
+    }).join('\n');
+  }
+
+  /* ================= בדיקת שדות חובה ================= */
+  var alertBox = document.getElementById('alert');
+  function showAlert(html){ alertBox.innerHTML = html; alertBox.classList.add('on'); }
+  function hideAlert(){ alertBox.classList.remove('on'); }
+
+  function validate(){
+    var bad = null;
+    Array.prototype.forEach.call(form.querySelectorAll('[required]'), function(el){
+      var ok = (el.type === 'checkbox') ? el.checked : el.value.trim() !== '';
+      if(el.type === 'email' && ok) ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim());
+      el.classList.toggle('bad', !ok);
+      if(!ok && !bad) bad = el;
+    });
+    if(bad){
+      showAlert('חסרים כמה שדות חובה — הם מסומנים בשאלון. אחרי מילוי שלהם אפשר לשלוח.');
+      bad.scrollIntoView({block:'center', behavior:'smooth'});
+      setTimeout(function(){ try{ bad.focus(); }catch(e){} }, 400);
+      return false;
+    }
+    hideAlert();
+    return true;
+  }
+
+  /* ================= שליחה ================= */
+  var btn = document.getElementById('send');
+  var TO  = 'etizbe@gmail.com';
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    if(form.querySelector('[name="_honey"]').value) return;
+    if(!validate()) return;
+
+    var rows  = collect();
+    var name  = document.getElementById('f-id').value.trim();
+    var email = document.getElementById('f-email').value.trim();
+
+    var payload = {
+      _subject: 'ייעוץ נומורולוגי | ' + (name || 'נשלח מהאתר'),
+      _template: 'table',
+      _captcha: 'false',
+      _replyto: email,
+      _autoresponse: form.querySelector('[name="_autoresponse"]').value
+    };
+    rows.forEach(function(r){
+      var key = r[0], k = 2;
+      while(key in payload){ key = r[0] + ' (' + k + ')'; k++; }
+      payload[key] = r[1];
+    });
+    payload.email = email;
+
+    btn.disabled = true;
+    btn.textContent = 'שולחים…';
+    hideAlert();
+
+    fetch('https://formsubmit.co/ajax/' + TO, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json', 'Accept':'application/json'},
+      body: JSON.stringify(payload)
+    })
+    .then(function(res){ if(!res.ok) throw new Error('bad status'); return res.json(); })
+    .then(function(){ finish(); })
+    .catch(function(){
+      btn.disabled = false;
+      btn.textContent = 'שליחת השאלון';
+      var body = encodeURIComponent(asText(rows)).slice(0,1700);
+      var subj = encodeURIComponent('ייעוץ נומורולוגי | ' + name);
+      showAlert('השליחה לא עברה, כנראה תקלת רשת רגעית. אפשר לנסות שוב, או ' +
+                '<a href="mailto:' + TO + '?subject=' + subj + '&body=' + body + '">לשלוח דרך תוכנת המייל</a>.');
+    });
+  });
+
+  function finish(){
+    var lp = hidden.value;
+    if(lp){
+      document.getElementById('done-num').textContent = lp.replace(' (מספר מאסטר)','');
+      document.getElementById('done-sub').textContent =
+        'שביל החיים שלך' + (lp.indexOf('מאסטר') > -1 ? ' — מספר מאסטר' : '') + '. נתחיל שם.';
+    }
+    document.getElementById('done').classList.add('on');
+    document.body.style.overflow = 'hidden';
+    window.scrollTo(0,0);
+  }
+
+  updateBar();
+})();
+</script>
+</body>
+</html>
