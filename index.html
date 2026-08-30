@@ -372,7 +372,8 @@ input.bad,textarea.bad{border-color:#C0714B;box-shadow:0 0 0 3px rgba(192,113,75
 
     <input type="hidden" name="_subject" value="ייעוץ נומרולוגי | שאלון חדש">
     <input type="hidden" name="_template" value="table">
-    <input type="hidden" name="_captcha" value="false">
+    <input type="hidden" id="form-next" name="_next" value="https://etizbe-ux.github.io/EsterNomrologySite/?submitted=1">
+    <input type="hidden" id="form-replyto" name="_replyto" value="">
     <input type="hidden" name="_autoresponse" value="קיבלתי את השאלון שלך, תודה שהקדשת לו מחשבה. אני עוברת עליו ובונה את המפה הנומרולוגית שלך, ואחזור אליך בקרוב עם קישור לפגישה. באהבה.">
     <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
     <input type="hidden" id="lifepath" name="שביל החיים (חושב אוטומטית)" value="">
@@ -791,83 +792,62 @@ input.bad,textarea.bad{border-color:#C0714B;box-shadow:0 0 0 3px rgba(192,113,75
 
   /* ================= שליחה ================= */
   var btn = document.getElementById('send');
-  var TO  = 'etizbe@gmail.com';
+  var replyTo = document.getElementById('form-replyto');
+  var nextUrl = document.getElementById('form-next');
+  var subjectField = form.querySelector('[name="_subject"]');
 
+  /*
+     FormSubmit שולח את הודעת האישור האוטומטית רק בשליחה רגילה של הטופס
+     (לא AJAX) וכאשר reCAPTCHA אינו מבוטל.
+  */
   form.addEventListener('submit', function(e){
-    e.preventDefault();
-    if(form.querySelector('[name="_honey"]').value) return;
-    if(!validate()) return;
+    if(form.querySelector('[name="_honey"]').value){
+      e.preventDefault();
+      return;
+    }
 
-    var rows  = collect();
+    if(!validate()){
+      e.preventDefault();
+      return;
+    }
+
     var name  = document.getElementById('f-id').value.trim();
     var email = document.getElementById('f-email').value.trim();
 
-    var payload = {
-      _subject: 'ייעוץ נומרולוגי | ' + (name || 'נשלח מהאתר'),
-      _template: 'table',
-      _captcha: 'false',
-      _replyto: email,
-      _autoresponse: form.querySelector('[name="_autoresponse"]').value
-    };
-    rows.forEach(function(r){
-      var key = r[0], k = 2;
-      while(key in payload){ key = r[0] + ' (' + k + ')'; k++; }
-      payload[key] = r[1];
-    });
-    payload.email = email;
+    subjectField.value = 'ייעוץ נומרולוגי | ' + (name || 'נשלח מהאתר');
+    replyTo.value = email;
+
+    /* חזרה לאותו אתר למסך התודה לאחר ש-FormSubmit קיבל את הטופס */
+    var baseUrl = window.location.origin + window.location.pathname;
+    var lp = hidden.value ? hidden.value.replace(' (מספר מאסטר)','') : '';
+    nextUrl.value = baseUrl + '?submitted=1' + (lp ? '&lp=' + encodeURIComponent(lp) : '');
 
     btn.disabled = true;
     btn.textContent = 'שולחים…';
     hideAlert();
-
-    fetch('https://formsubmit.co/ajax/' + TO, {
-      method: 'POST',
-      headers: {'Content-Type':'application/json', 'Accept':'application/json'},
-      body: JSON.stringify(payload)
-    })
-    .then(function(res){
-      return res.json().then(function(data){
-        if(!res.ok){
-          throw new Error((data && data.message) ? data.message : 'FormSubmit החזיר שגיאת שרת');
-        }
-        return data;
-      });
-    })
-    .then(function(data){
-      var success = data && (data.success === true || String(data.success).toLowerCase() === 'true');
-      if(!success){
-        throw new Error((data && data.message) ? data.message : 'FormSubmit לא אישר שהטופס התקבל');
-      }
-      finish();
-    })
-    .catch(function(err){
-      btn.disabled = false;
-      btn.textContent = 'שליחת השאלון';
-      var body = encodeURIComponent(asText(rows)).slice(0,1700);
-      var subj = encodeURIComponent('ייעוץ נומרולוגי | ' + name);
-      var msg = (err && err.message) ? err.message : '';
-      var extra = '';
-      if(/web server|HTML files|server/i.test(msg)){
-        extra = '<br><strong>חשוב:</strong> יש לפתוח ולשלוח את הטופס דרך האתר שפורסם ב-GitHub Pages, ולא על ידי פתיחת קובץ ה-HTML מהמחשב.';
-      } else if(msg){
-        extra = '<br><small>' + msg.replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}) + '</small>';
-      }
-      showAlert('הטופס לא נשלח ל-FormSubmit ולכן לא הגיע למייל.' + extra + '<br>אפשר לנסות שוב, או ' +
-                '<a href="mailto:' + TO + '?subject=' + subj + '&body=' + body + '">לשלוח דרך תוכנת המייל</a>.');
-    });
   });
 
-  function finish(){
-    var lp = hidden.value;
+  function finish(lpOverride){
+    var lp = lpOverride || hidden.value;
     if(lp){
       document.getElementById('done-num').textContent = lp.replace(' (מספר מאסטר)','');
-      document.getElementById('done-sub').textContent =
-        'שביל החיים שלך' + (lp.indexOf('מאסטר') > -1 ? ' — מספר מאסטר' : '') + '. נתחיל שם.';
+      document.getElementById('done-sub').textContent = 'שביל החיים שלך. נתחיל שם.';
     }
     document.getElementById('done').classList.add('on');
     document.body.style.overflow = 'hidden';
     window.scrollTo(0,0);
   }
+
+  /* אם חזרנו מ-FormSubmit אחרי שליחה מוצלחת, מציגים את מסך התודה */
+  try{
+    var params = new URLSearchParams(window.location.search);
+    if(params.get('submitted') === '1'){
+      finish(params.get('lp') || '');
+      if(window.history && window.history.replaceState){
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    }
+  }catch(e){}
 
   updateBar();
 })();
